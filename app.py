@@ -110,9 +110,9 @@ header{
 }
 
 .logo-box img{
-    width:38px;
-    height:38px;
-    border-radius:50%;
+    width:70px;
+    height:70px;
+    border-radius:10px;
     object-fit:cover;
 }
 
