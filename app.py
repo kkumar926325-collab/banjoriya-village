@@ -14,7 +14,7 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 # =========================
 # FOLDERS
 # =========================
-BASE = os.path.expanduser("~/banjoriya-village")
+BASE = os.path.dirname(os.path.abspath(__file__))
 PHOTO_DIR = os.path.join(BASE, "photos")
 VIDEO_DIR = os.path.join(BASE, "videos")
 
