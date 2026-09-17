@@ -535,7 +535,7 @@ def admin():
 <html>
 
 <head>
-
+<meta name="google-site-verification" content="AWrslUPdgnWfyj4PRQpgZddkYFUY_RbrhL16qPHxnVU" />
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
