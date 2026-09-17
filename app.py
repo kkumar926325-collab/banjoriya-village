@@ -94,7 +94,7 @@ header{
     position:sticky;
     top:0;
     z-index:10;
-    height:58px;
+    height:76px;
     background:white;
     display:flex;
     align-items:center;
