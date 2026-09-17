@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
-app.secret_key = "banjoriya-secret-key"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 # =========================
 # ADMIN PASSWORD
