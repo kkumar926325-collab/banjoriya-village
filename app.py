@@ -135,63 +135,66 @@ content="width=device-width, initial-scale=1.0">
 <title>Banjoriya Village</title>
 
 <style>
-
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
     font-family:Arial,sans-serif;
-    background:#f5f8f5;
+    background:#f3f7f4;
     color:#17251d;
 }
 
 /* HEADER */
-
 header{
     position:sticky;
     top:0;
     z-index:10;
-    height:76px;
-    background:white;
+    min-height:76px;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(12px);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:8px 15px;
-    box-shadow:0 2px 12px rgba(0,0,0,.12);
+    padding:8px 16px;
+    box-shadow:0 2px 18px rgba(0,0,0,.10);
 }
 
 .logo-box{
     display:flex;
     align-items:center;
-    gap:9px;
+    gap:10px;
 }
 
 .logo-box img{
-    width:70px;
-    height:70px;
-    border-radius:10px;
+    width:58px;
+    height:58px;
+    border-radius:14px;
     object-fit:cover;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
 }
 
 .logo-box b{
-    font-size:14px;
+    font-size:15px;
+    letter-spacing:.5px;
+    color:#07502f;
 }
 
 .admin{
     text-decoration:none;
-    color:#176b42;
+    color:white;
+    background:#087443;
+    padding:10px 14px;
+    border-radius:22px;
     font-weight:bold;
     font-size:13px;
+    box-shadow:0 5px 14px rgba(8,116,67,.25);
 }
 
 /* HERO */
-
 .hero{
-    min-height:330px;
+    min-height:390px;
     background:
-    linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.45)),
+    linear-gradient(135deg,rgba(0,45,25,.35),rgba(0,0,0,.58)),
     url("/photos/village.jpg");
     background-size:cover;
     background-position:center;
@@ -199,57 +202,60 @@ header{
     justify-content:center;
     align-items:center;
     text-align:center;
+    padding:30px 18px;
 }
 
 .hero h1{
     color:white;
-    font-size:42px;
+    font-size:clamp(34px,8vw,58px);
     margin:0;
-    text-shadow:0 4px 12px rgba(0,0,0,.7);
+    text-shadow:0 5px 18px rgba(0,0,0,.7);
+    letter-spacing:.5px;
 }
 
 /* SECTIONS */
-
 .section{
     max-width:1100px;
     margin:auto;
-    padding:45px 14px;
+    padding:52px 16px;
 }
 
 .section-title{
     text-align:center;
-    margin-bottom:25px;
+    margin-bottom:28px;
 }
 
 .section-title h2{
     margin:0;
-    font-size:27px;
+    font-size:30px;
+    color:#07502f;
 }
 
 .section-title p{
-    margin:7px 0;
-    color:#777;
+    margin:9px 0 0;
+    color:#6d776f;
+    font-size:14px;
 }
 
 /* PHOTO GRID */
-
 .gallery{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:16px;
+    gap:18px;
 }
 
 .photo-card{
     background:white;
-    border-radius:16px;
+    border-radius:18px;
     overflow:hidden;
-    box-shadow:0 5px 18px rgba(0,0,0,.12);
     cursor:pointer;
-    transition:.25s;
+    box-shadow:0 7px 24px rgba(0,0,0,.10);
+    transition:transform .25s,box-shadow .25s;
 }
 
 .photo-card:hover{
-    transform:translateY(-4px);
+    transform:translateY(-6px);
+    box-shadow:0 12px 30px rgba(0,0,0,.16);
 }
 
 .photo-card img{
@@ -260,18 +266,17 @@ header{
 }
 
 /* VIDEO */
-
 .video-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
+    gap:22px;
 }
 
 .video-card{
-    background:#111;
-    border-radius:18px;
+    background:#101412;
+    border-radius:20px;
     overflow:hidden;
-    box-shadow:0 5px 18px rgba(0,0,0,.18);
+    box-shadow:0 8px 26px rgba(0,0,0,.18);
 }
 
 .video-card video{
@@ -280,43 +285,44 @@ header{
     max-height:650px;
     display:block;
     object-fit:contain;
-    background:#111;
+    background:#101412;
 }
 
 /* EMPTY */
-
 .empty{
     text-align:center;
-    color:#777;
-    padding:30px;
+    color:#6d776f;
+    background:white;
+    border-radius:18px;
+    padding:35px 20px;
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
 }
 
 /* FOOTER */
-
 footer{
-    background:#07502f;
+    background:linear-gradient(135deg,#06472b,#087443);
     color:white;
     text-align:center;
-    padding:28px 10px;
+    padding:32px 10px;
 }
 
 footer b{
-    font-size:16px;
+    font-size:17px;
 }
 
 footer p{
-    margin:7px 0 0;
+    margin:8px 0 0;
     font-size:13px;
+    opacity:.9;
 }
 
 /* PHOTO VIEWER */
-
 #viewer{
     display:none;
     position:fixed;
     inset:0;
     z-index:100;
-    background:rgba(0,0,0,.94);
+    background:rgba(0,0,0,.95);
     justify-content:center;
     align-items:center;
     padding:20px;
@@ -326,7 +332,7 @@ footer p{
     max-width:95%;
     max-height:90%;
     object-fit:contain;
-    border-radius:10px;
+    border-radius:12px;
 }
 
 .close{
@@ -338,6 +344,51 @@ footer p{
     cursor:pointer;
 }
 
+@media(max-width:600px){
+    header{
+        padding:7px 10px;
+    }
+
+    .logo-box img{
+        width:52px;
+        height:52px;
+    }
+
+    .logo-box b{
+        font-size:12px;
+    }
+
+    .admin{
+        padding:9px 11px;
+        font-size:12px;
+    }
+
+    .hero{
+        min-height:330px;
+    }
+
+    .section{
+        padding:40px 12px;
+    }
+
+    .gallery{
+        grid-template-columns:repeat(2,1fr);
+        gap:12px;
+    }
+
+    .photo-card img{
+        height:190px;
+    }
+
+    .video-grid{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .section-title h2{
+        font-size:26px;
+    }
+}
 </style>
 
 </head>
