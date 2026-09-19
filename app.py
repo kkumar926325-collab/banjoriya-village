@@ -1,7 +1,7 @@
-from flask import Flask, request, session, redirect, render_template_string, send_from_directory
+from flask import Flask, request, session, redirect, render_template_string, send_from_directory, send_file, Response
 from werkzeug.utils import secure_filename
 import os
-from drive_upload import upload_to_drive
+from drive_upload import upload_to_drive, get_drive_service, list_drive_files
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
@@ -33,6 +33,40 @@ def allowed_file(filename, allowed):
         and filename.rsplit(".", 1)[1].lower() in allowed
     )
 
+@app.route("/drive/<file_id>")
+def drive_file(file_id):
+
+    service = get_drive_service()
+
+    file_data = service.files().get(
+        fileId=file_id,
+        fields="name,mimeType"
+    ).execute()
+
+    request_drive = service.files().get_media(
+        fileId=file_id
+    )
+
+    from googleapiclient.http import MediaIoBaseDownload
+    import tempfile
+
+    temp = tempfile.NamedTemporaryFile(delete=False)
+    temp_path = temp.name
+    temp.close()
+
+    with open(temp_path, "wb") as fh:
+        downloader = MediaIoBaseDownload(fh, request_drive)
+        done = False
+        while not done:
+            _, done = downloader.next_chunk()
+
+    return send_file(
+        temp_path,
+        mimetype=file_data["mimeType"],
+        download_name=file_data["name"],
+        as_attachment=False
+    )
+
 
 # =========================
 # SERVE PHOTOS
@@ -56,16 +90,20 @@ def videos(filename):
 @app.route("/")
 def home():
 
+    drive_files = list_drive_files()
+
     photos_list = sorted([
-        f for f in os.listdir(PHOTO_DIR)
-        if allowed_file(f, ALLOWED_PHOTOS)
-        and f.lower() != "logo.png"
-    ])
+        f for f in drive_files
+        if f.get("mimeType", "").startswith("image/")
+        and f.get("name", "").lower() != "logo.png"
+        and allowed_file(f.get("name", ""), ALLOWED_PHOTOS)
+    ], key=lambda x: x.get("name", "").lower())
 
     videos_list = sorted([
-        f for f in os.listdir(VIDEO_DIR)
-        if allowed_file(f, ALLOWED_VIDEOS)
-    ])
+        f for f in drive_files
+        if f.get("mimeType", "").startswith("video/")
+        and allowed_file(f.get("name", ""), ALLOWED_VIDEOS)
+    ], key=lambda x: x.get("name", "").lower())
 
     return render_template_string("""
 <!DOCTYPE html>
@@ -325,7 +363,7 @@ footer p{
 <div class="photo-card"
 onclick="openPhoto(this.querySelector('img').src)">
 
-<img src="/photos/{{ photo }}">
+<img src="/drive/{{ photo['id'] }}">
 
 </div>
 
@@ -360,7 +398,7 @@ onclick="openPhoto(this.querySelector('img').src)">
 <div class="video-card">
 
 <video controls playsinline preload="metadata">
-<source src="/videos/{{ video }}">
+<source src="/drive/{{ video['id'] }}" type="{{ video['mimeType'] }}">
 आपका ब्राउज़र वीडियो नहीं चला सकता।
 </video>
 
