@@ -40,32 +40,51 @@ def drive_file(file_id):
 
     file_data = service.files().get(
         fileId=file_id,
-        fields="name,mimeType"
+        fields="name,mimeType,size"
     ).execute()
 
-    request_drive = service.files().get_media(
-        fileId=file_id
+    size = int(file_data.get("size", 0))
+    range_header = request.headers.get("Range")
+
+    if range_header and range_header.startswith("bytes="):
+        range_value = range_header.replace("bytes=", "", 1).split("-")
+        start_byte = int(range_value[0])
+
+        if range_value[1]:
+            end_byte = int(range_value[1])
+        else:
+            end_byte = min(start_byte + 1024 * 1024 - 1, size - 1)
+
+        end_byte = min(end_byte, size - 1)
+        length = end_byte - start_byte + 1
+
+        drive_request = service.files().get_media(fileId=file_id)
+        drive_request.headers["Range"] = f"bytes={start_byte}-{end_byte}"
+
+        data = drive_request.execute()
+
+        response = Response(
+            data,
+            status=206,
+            mimetype=file_data["mimeType"]
+        )
+        response.headers["Content-Range"] = f"bytes {start_byte}-{end_byte}/{size}"
+        response.headers["Accept-Ranges"] = "bytes"
+        response.headers["Content-Length"] = str(length)
+        response.headers["Cache-Control"] = "public, max-age=3600"
+        return response
+
+    drive_request = service.files().get_media(fileId=file_id)
+    data = drive_request.execute()
+
+    response = Response(
+        data,
+        status=200,
+        mimetype=file_data["mimeType"]
     )
-
-    from googleapiclient.http import MediaIoBaseDownload
-    import tempfile
-
-    temp = tempfile.NamedTemporaryFile(delete=False)
-    temp_path = temp.name
-    temp.close()
-
-    with open(temp_path, "wb") as fh:
-        downloader = MediaIoBaseDownload(fh, request_drive)
-        done = False
-        while not done:
-            _, done = downloader.next_chunk()
-
-    return send_file(
-        temp_path,
-        mimetype=file_data["mimeType"],
-        download_name=file_data["name"],
-        as_attachment=False
-    )
+    response.headers["Accept-Ranges"] = "bytes"
+    response.headers["Content-Length"] = str(size)
+    return response
 
 
 # =========================
