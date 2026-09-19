@@ -65,3 +65,32 @@ def upload_to_drive(file_path):
     ).execute()
 
     return uploaded_file
+
+def list_drive_files():
+    service = get_drive_service()
+
+    results = service.files().list(
+        q=f"'{FOLDER_ID}' in parents and trashed = false",
+        fields="files(id,name,mimeType,size)",
+        orderBy="createdTime desc"
+    ).execute()
+
+    return results.get("files", [])
+
+def get_drive_file(file_id):
+    service = get_drive_service()
+    return service.files().get(
+        fileId=file_id,
+        fields="id,name,mimeType,size"
+    ).execute()
+
+def list_drive_files():
+    service = get_drive_service()
+
+    results = service.files().list(
+        q=f"'{FOLDER_ID}' in parents and trashed = false",
+        fields="files(id,name,mimeType,size)",
+        orderBy="createdTime desc"
+    ).execute()
+
+    return results.get("files", [])
