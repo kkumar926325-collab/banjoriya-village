@@ -1,6 +1,7 @@
 from flask import Flask, request, session, redirect, render_template_string, send_from_directory
 from werkzeug.utils import secure_filename
 import os
+from drive_upload import upload_to_drive
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
@@ -9,6 +10,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 # ADMIN PASSWORD
 # =========================
 import os
+from drive_upload import upload_to_drive
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 # =========================
@@ -775,6 +777,10 @@ def upload():
                     os.path.join(PHOTO_DIR, filename)
                 )
 
+                try:
+                    upload_to_drive(os.path.join(PHOTO_DIR, filename))
+                except Exception as e:
+                    print("Drive upload error:", e)
                 photo_count += 1
 
 
@@ -790,7 +796,12 @@ def upload():
                     os.path.join(VIDEO_DIR, filename)
                 )
 
-                video_count += 1
+        try:
+            upload_to_drive(os.path.join(VIDEO_DIR, filename))
+        except Exception as e:
+            print("Drive upload error:", e)
+
+        video_count += 1
 
 
     return f"""
