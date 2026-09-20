@@ -133,6 +133,7 @@ def home():
 content="width=device-width, initial-scale=1.0">
 
 <title>Banjoriya Village</title>
+<meta name="google-site-verification" content="7UvQr1PzOiTl41n7ADAwbje_gcqkFvV6hw4w7HEv1rM" />
 
 <style>
 *{box-sizing:border-box}
